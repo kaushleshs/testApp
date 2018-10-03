@@ -1,0 +1,1836 @@
+---
+openapi: 3.0.0
+info:
+  version: 2.0.0
+  title: Aperi NAT-Alpha
+  contact:
+    name: Aperi Support
+    url: 'http://www.apericorp.com'
+    email: support@apericorp.com
+servers:
+  - url: 'https://192.168.60.26/slots/4/apps/app-nat'
+tags:
+  - name: application info
+    description: Information about this application
+  - name: ports
+    description: Information about ports
+  - name: groups
+    description: Information about groups
+  - name: devices
+    description: Information about devices
+  - name: receiver alarms
+    description: Information about receiver's alarms
+  - name: receiver interface
+    description: Information about receiver's interface
+  - name: receiver merging
+    description: Information about receiver merging
+  - name: receiver policy
+    description: Information about receiver's policy
+  - name: receiver statistics
+    description: Information about receiver's stattistics
+  - name: receiver status
+    description: Information about receiver's stattistics
+  - name: receivers
+    description: Information about receivers
+  - name: senders
+    description: Information about senders
+paths:
+  /app:
+    get:
+      summary: Information about this application
+      operationId: getAppInfo
+      tags:
+        - application info
+      responses:
+        '200':
+          description: A single application information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationInfo'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /ports:
+    get:
+      summary: List of ports
+      operationId: getPorts
+      tags:
+        - ports
+      responses:
+        '200':
+          description: A list of ports.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Port'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/ports/{portId}':
+    get:
+      summary: Get port
+      operationId: getPortByID
+      tags:
+        - ports
+      parameters:
+        - in: path
+          name: portId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The port id.
+      responses:
+        '200':
+          description: A single port.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Port'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /groups:
+    get:
+      summary: List of groups
+      operationId: getGroups
+      tags:
+        - groups
+      responses:
+        '200':
+          description: A list of groups.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Create Groups
+      operationId: postGroups
+      requestBody:
+        description: Groups to be created.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Group'
+      tags:
+        - groups
+      responses:
+        '201':
+          description: Created response.
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/groups/{groupId}':
+    get:
+      summary: Get group
+      operationId: getGroupByID
+      tags:
+        - groups
+      parameters:
+        - in: path
+          name: groupId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The group id.
+      responses:
+        '200':
+          description: A single group.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      summary: Update group
+      operationId: putGroup
+      tags:
+        - groups
+      requestBody:
+        description: Update groups.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Group'
+      parameters:
+        - in: path
+          name: groupId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The group id.
+      responses:
+        '201':
+          description: Updated device.
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: deletes a single group based on the ID supplied
+      operationId: deleteGroup
+      tags:
+        - groups
+      parameters:
+        - name: groupId
+          in: path
+          description: ID of group to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: group deleted
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /devices:
+    get:
+      summary: List of devices
+      operationId: getDevices
+      tags:
+        - devices
+      responses:
+        '200':
+          description: A list of devices.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Device'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Create Devices
+      operationId: postDevices
+      requestBody:
+        description: Devices to be created.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Device'
+      tags:
+        - devices
+      responses:
+        '201':
+          description: Created response.
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/devices/{deviceId}':
+    get:
+      summary: Get device
+      operationId: getDeviceByID
+      tags:
+        - devices
+      parameters:
+        - in: path
+          name: deviceId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The device id.
+      responses:
+        '200':
+          description: A single device.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      summary: Update device
+      operationId: putDevice
+      tags:
+        - devices
+      requestBody:
+        description: Update devices.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Device'
+      parameters:
+        - in: path
+          name: deviceId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The device id.
+      responses:
+        '201':
+          description: Updated device.
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: deletes a single device based on the ID supplied
+      operationId: deleteDevice
+      tags:
+        - devices
+      parameters:
+        - name: deviceId
+          in: path
+          description: ID of device to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: device deleted
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/devices/{deviceId}/receivers':
+    get:
+      summary: List of receivers
+      operationId: getReceivers
+      tags:
+        - receivers
+      parameters:
+        - in: path
+          name: deviceId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The device id.
+      responses:
+        '200':
+          description: A list of receivers.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Receiver'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/devices/{deviceId}/receivers/{receiverId}':
+    get:
+      summary: Get a single receiver
+      operationId: getReceiverByID
+      tags:
+        - receivers
+      parameters:
+        - in: path
+          name: deviceId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The device id.
+        - in: path
+          name: receiverId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The receiver id.
+      responses:
+        '200':
+          description: A single receiver.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Receiver'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      summary: Update a single receiver
+      operationId: putReceiver
+      tags:
+        - receivers
+      requestBody:
+        description: Updated receiver.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Receiver'
+      parameters:
+        - in: path
+          name: deviceId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The device id.
+        - in: path
+          name: receiverId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The receiver id.
+      responses:
+        '202':
+          description: Updated receiver.
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/devices/{deviceId}/receivers/{receiverId}/interface':
+    get:
+      summary: Get a single receiver's interface
+      operationId: getReceiverInterfaceByID
+      tags:
+        - receiver interface
+      parameters:
+        - in: path
+          name: deviceId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The device id.
+        - in: path
+          name: receiverId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The receiver id.
+      responses:
+        '200':
+          description: A single receiver's interface.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReceiverInterface'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      summary: Update a single receiver's interface
+      operationId: putReceiverInterface
+      tags:
+        - receiver interface
+      requestBody:
+        description: Updated receiver interface.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReceiverInterface'
+      parameters:
+        - in: path
+          name: deviceId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The device id.
+        - in: path
+          name: receiverId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The receiver id.
+      responses:
+        '202':
+          description: Updated receiver.
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/devices/{deviceId}/receivers/{receiverId}/statistics':
+    get:
+      summary: Get a single receiver's statistics
+      operationId: getReceiverStatisticsByID
+      tags:
+        - receiver statistics
+      parameters:
+        - in: path
+          name: deviceId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The device id.
+        - in: path
+          name: receiverId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The receiver id.
+      responses:
+        '200':
+          description: A single receiver's statistics.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReceiverStatistics'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/devices/{deviceId}/receivers/{receiverId}/status':
+    get:
+      summary: Get a single receiver's status
+      operationId: getReceiverStatusByID
+      tags:
+        - receiver status
+      parameters:
+        - in: path
+          name: deviceId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The device id.
+        - in: path
+          name: receiverId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The receiver id.
+      responses:
+        '200':
+          description: A single receiver's status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReceiverStatus'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/devices/{deviceId}/receivers/{receiverId}/policy':
+    get:
+      summary: Get a single receiver's policy
+      operationId: getReceiverPolicyByID
+      tags:
+        - receiver policy
+      parameters:
+        - in: path
+          name: deviceId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The device id.
+        - in: path
+          name: receiverId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The receiver id.
+      responses:
+        '200':
+          description: A single receiver's policy.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReceiverPolicy'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      summary: Update a single receiver's policy
+      operationId: putReceiverPolicy
+      tags:
+        - receiver policy
+      requestBody:
+        description: Updated receiver policy.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReceiverPolicy'
+      parameters:
+        - in: path
+          name: deviceId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The device id.
+        - in: path
+          name: receiverId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The receiver id.
+      responses:
+        '202':
+          description: Updated receiver.
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/devices/{deviceId}/receivers/{receiverId}/alarms':
+    get:
+      summary: Get a single receiver's alarms
+      operationId: getReceiverAlarmsByID
+      tags:
+        - receiver alarms
+      parameters:
+        - in: path
+          name: deviceId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The device id.
+        - in: path
+          name: receiverId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The receiver id.
+      responses:
+        '200':
+          description: A single receiver's alarms.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReceiverPolicy'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/devices/{deviceId}/receivermerging':
+    get:
+      summary: A device's receiver merging.
+      operationId: getReceiverMergingById
+      tags:
+        - receiver merging
+      parameters:
+        - in: path
+          name: deviceId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The device id.
+      responses:
+        '200':
+          description: A list of receivers.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReceiverMerging'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      summary: Update receiver merging
+      operationId: putReceiverMerging
+      tags:
+        - receiver merging
+      requestBody:
+        description: Updated receiver merging.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReceiverMerging'
+      parameters:
+        - in: path
+          name: deviceId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The device id.
+      responses:
+        '201':
+          description: Updated receiver merging.
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/devices/{deviceId}/senders':
+    get:
+      summary: List of senders
+      operationId: getSenders
+      tags:
+        - senders
+      parameters:
+        - in: path
+          name: deviceId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The device id.
+      responses:
+        '200':
+          description: A list of senders.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Sender'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/devices/{deviceId}/senders/{senderId}':
+    get:
+      summary: Get a single sender
+      operationId: getSenderByID
+      tags:
+        - senders
+      parameters:
+        - in: path
+          name: deviceId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The device id.
+        - in: path
+          name: senderId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The sender id.
+      responses:
+        '200':
+          description: A single sender.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sender'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      summary: Update a single sender
+      operationId: putSender
+      tags:
+        - senders
+      requestBody:
+        description: Updated sender.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Sender'
+      parameters:
+        - in: path
+          name: deviceId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The device id.
+        - in: path
+          name: senderId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The sender id.
+      responses:
+        '202':
+          description: Updated sender.
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/devices/{deviceId}/senders/{senderId}/interface':
+    get:
+      summary: Get a single sender's interface
+      operationId: getSenderInterfaceByID
+      tags:
+        - sender interface
+      parameters:
+        - in: path
+          name: deviceId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The device id.
+        - in: path
+          name: senderId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The sender id.
+      responses:
+        '200':
+          description: A single sender's interface.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SenderInterface'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      summary: Update a single sender's interface
+      operationId: putSenderInterface
+      tags:
+        - sender interface
+      requestBody:
+        description: Updated sender interface.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SenderInterface'
+      parameters:
+        - in: path
+          name: deviceId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The device id.
+        - in: path
+          name: senderId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The sender id.
+      responses:
+        '202':
+          description: Updated sender.
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/devices/{deviceId}/senders/{senderId}/statistics':
+    get:
+      summary: Get a single sender's statistics
+      operationId: getSenderStatisticsByID
+      tags:
+        - sender statistics
+      parameters:
+        - in: path
+          name: deviceId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The device id.
+        - in: path
+          name: senderId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The sender id.
+      responses:
+        '200':
+          description: A single sender's statistics.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SenderStatistics'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/devices/{deviceId}/senders/{senderId}/status':
+    get:
+      summary: Get a single sender's status
+      operationId: getSenderStatusByID
+      tags:
+        - sender status
+      parameters:
+        - in: path
+          name: deviceId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The device id.
+        - in: path
+          name: senderId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The sender id.
+      responses:
+        '200':
+          description: A single sender's status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SenderStatus'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/devices/{deviceId}/senders/{senderId}/policy':
+    get:
+      summary: Get a single sender's policy
+      operationId: getSenderPolicyByID
+      tags:
+        - sender policy
+      parameters:
+        - in: path
+          name: deviceId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The device id.
+        - in: path
+          name: senderId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The sender id.
+      responses:
+        '200':
+          description: A single sender's policy.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SenderPolicy'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      summary: Update a single sender's policy
+      operationId: putsenderPolicy
+      tags:
+        - sender policy
+      requestBody:
+        description: Updated sender policy.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SenderPolicy'
+      parameters:
+        - in: path
+          name: deviceId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The device id.
+        - in: path
+          name: senderId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The sender id.
+      responses:
+        '202':
+          description: Updated sender.
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/devices/{deviceId}/senders/{senderId}/alarms':
+    get:
+      summary: Get a single sender's alarms
+      operationId: getSenderAlarmsByID
+      tags:
+        - sender alarms
+      parameters:
+        - in: path
+          name: deviceId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The device id.
+        - in: path
+          name: senderId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The sender id.
+      responses:
+        '200':
+          description: A single sender's alarms.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SenderPolicy'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    ApplicationInfo:
+      type: object
+      description: Describes application info
+      title: Application info
+      properties:
+        name:
+          type: string
+        vendor:
+          type: string
+        version:
+          type: string
+        status:
+          $ref: '#/components/schemas/Device/properties/status'
+        image_id:
+          type: string
+        user_guide_href:
+          type: string
+        api_doc_href:
+          type: string
+        uptime:
+          type: string
+        licensing: {}
+    Port:
+      type: object
+      title: Port
+      description: Describes the port properties
+      properties:
+        id:
+          type: string
+          pattern: ^(.*)$
+        href:
+          type: string
+          pattern: ^(.*)$
+        link:
+          type: boolean
+        sfp_present:
+          type: boolean
+        stats:
+          type: object
+          properties:
+            tx_packets:
+              type: integer
+            rx_packets:
+              type: integer
+            rx_err_packets:
+              type: integer
+        location:
+          type: object
+          required:
+            - type
+            - position
+          properties:
+            type:
+              type: string
+              pattern: ^(.*)$
+            position:
+              type: integer
+          example:
+            - type: backplane
+      example:
+        - type: xe0
+        - href: /ports/xe0
+    Group:
+      type: object
+      description: Describes a group
+      title: Group
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        devices:
+          type: array
+          items:
+            type: string
+    Device:
+      type: object
+      description: Describes a device
+      title: Device
+      properties:
+        id:
+          type: string
+        group:
+          type: object
+          description: Describes a group
+          title: Group
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+            description:
+              type: string
+            devices:
+              type: array
+              items:
+                type: string
+        status:
+          type: object
+          description: Describes a status
+          title: Status
+          properties:
+            color:
+              type: string
+            message:
+              type: string
+        alarms:
+          type: array
+          items:
+            type: object
+            description: Describes an alarm
+            title: Alarm
+            properties:
+              path:
+                type: string
+              value:
+                type: boolean
+              status:
+                $ref: '#/components/schemas/Device/properties/status'
+        receiver_merging:
+          type: object
+          description: Describes a receiver merging
+          title: Receiver Merging
+          oneOf:
+            - properties:
+                type:
+                  type: string
+                hitless:
+                  type: object
+            - properties:
+                type:
+                  type: string
+                failover:
+                  type: object
+                select_input:
+                  type: integer
+                failover_delay:
+                  type: integer
+                revert_delay:
+                  type: integer
+        receivers:
+          type: array
+          items:
+            type: object
+            description: Describes a receiver
+            title: Receiver
+            properties:
+              status:
+                $ref: '#/components/schemas/Device/properties/status'
+              stats:
+                $ref: '#/components/schemas/Sender/properties/stats'
+              interface:
+                $ref: '#/components/schemas/Sender/properties/interface'
+              policy:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Sender/properties/policy/items'
+        senders:
+          type: array
+          items:
+            type: object
+            description: Describes a sender
+            title: Sender
+            properties:
+              status:
+                $ref: '#/components/schemas/Device/properties/status'
+              stats:
+                $ref: '#/components/schemas/Sender/properties/stats'
+              interface:
+                $ref: '#/components/schemas/Sender/properties/interface'
+              policy:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Sender/properties/policy/items'
+    Receiver:
+      type: object
+      description: Describes a receiver
+      title: Receiver
+      properties:
+        status:
+          $ref: '#/components/schemas/Device/properties/status'
+        stats:
+          $ref: '#/components/schemas/Sender/properties/stats'
+        interface:
+          $ref: '#/components/schemas/Sender/properties/interface'
+        policy:
+          type: array
+          items:
+            $ref: '#/components/schemas/Sender/properties/policy/items'
+    ReceiverStatistics:
+      $ref: '#/components/schemas/SenderStatistics'
+    ReceiverStatus:
+      $ref: '#/components/schemas/SenderStatus'
+    ReceiverPolicy:
+      $ref: '#/components/schemas/SenderPolicy'
+    ReceiverInterface:
+      $ref: '#/components/schemas/SenderInterface'
+    ReceiverMerging:
+      type: object
+      description: Describes a receiver merging
+      title: Receiver Merging
+      oneOf:
+        - properties:
+            type:
+              type: string
+            hitless:
+              type: object
+        - properties:
+            type:
+              type: string
+            failover:
+              type: object
+            select_input:
+              type: integer
+            failover_delay:
+              type: integer
+            revert_delay:
+              type: integer
+    Sender:
+      type: object
+      description: Describes a sender
+      title: Sender
+      properties:
+        status:
+          $ref: '#/components/schemas/Device/properties/status'
+        stats:
+          type: object
+          description: Describes a stats
+          title: Stats
+          properties:
+            interface:
+              $ref: '#/components/schemas/SenderStatistics/properties/interface'
+            rtp:
+              $ref: '#/components/schemas/SenderStatistics/properties/rtp'
+            ieee1588:
+              $ref: '#/components/schemas/SenderStatistics/properties/ieee1588'
+            sdi:
+              $ref: '#/components/schemas/SenderStatistics/properties/sdi'
+            ts:
+              $ref: '#/components/schemas/SenderStatistics/properties/ts'
+        interface:
+          type: object
+          description: Describes an interface
+          title: Interface
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+            ip:
+              type: object
+              properties:
+                local_address:
+                  type: string
+                gw_address:
+                  type: string
+                netmask:
+                  type: string
+                igmp:
+                  type: string
+            vlans:
+              type: array
+              items:
+                type: integer
+            src_ip:
+              type: string
+            dst_ip:
+              type: string
+            src_port:
+              type: integer
+            dst_port:
+              type: integer
+        policy:
+          type: array
+          items:
+            type: object
+            description: Describes a policy
+            title: Policy
+            oneOf:
+              - $ref: '#/components/schemas/SenderPolicy/oneOf/0'
+              - $ref: '#/components/schemas/SenderPolicy/oneOf/1'
+              - $ref: '#/components/schemas/SenderPolicy/oneOf/2'
+              - $ref: '#/components/schemas/SenderPolicy/oneOf/3'
+    SenderStatistics:
+      type: object
+      description: Describes a stats
+      title: Stats
+      properties:
+        interface:
+          type: object
+          description: Describes a interface stats
+          title: Interface Stats
+          properties:
+            id:
+              type: string
+            arp:
+              type: object
+              description: Describes a packet stats
+              title: Packet Stats
+              properties:
+                tx_packets:
+                  type: integer
+                rx_packets:
+                  type: integer
+                rx_err_packets:
+                  type: integer
+            icmp:
+              $ref: '#/components/schemas/SenderStatistics/properties/interface/properties/arp'
+            igmp:
+              $ref: '#/components/schemas/SenderStatistics/properties/interface/properties/arp'
+        rtp:
+          type: object
+          description: Describes a rtp Stats
+          title: RTP Stats
+          properties:
+            type:
+              type: string
+            locked:
+              type: boolean
+            uptime:
+              type: integer
+            packet_cnt:
+              type: integer
+            sn_error_cnt:
+              type: integer
+            sn_error:
+              type: boolean
+            ts_error_cnt:
+              type: integer
+            ts_error:
+              type: boolean
+            bitrate:
+              type: integer
+            ssrc:
+              type: integer
+            pdv_stats:
+              type: object
+              properties:
+                two_seconds:
+                  type: object
+                  properties:
+                    min:
+                      type: integer
+                    max:
+                      type: integer
+                    avg:
+                      type: integer
+                one_minute:
+                  type: object
+                  properties:
+                    min:
+                      type: integer
+                    max:
+                      type: integer
+                    avg:
+                      type: integer
+                fifteen_minutes:
+                  type: object
+                  properties:
+                    min:
+                      type: integer
+                    max:
+                      type: integer
+                    avg:
+                      type: integer
+                one_hour:
+                  type: object
+                  properties:
+                    min:
+                      type: integer
+                    max:
+                      type: integer
+                    avg:
+                      type: integer
+                one_day:
+                  type: object
+                  properties:
+                    min:
+                      type: integer
+                    max:
+                      type: integer
+                    avg:
+                      type: integer
+                lifetime:
+                  type: object
+                  properties:
+                    min:
+                      type: integer
+                    max:
+                      type: integer
+                    avg:
+                      type: integer
+            payload:
+              oneOf:
+                - type: object
+                  description: Describes a smpte-2022-6
+                  title: SMPTE-2022-6
+                  properties:
+                    type:
+                      type: string
+                    sdi:
+                      $ref: '#/components/schemas/SenderStatistics/properties/sdi'
+                - type: object
+                  description: Describes a smpte-2022-2
+                  title: SMPTE-2022-2
+                  properties:
+                    type:
+                      type: string
+                    ts:
+                      $ref: '#/components/schemas/SenderStatistics/properties/ts'
+                - type: object
+                  description: Describes a rfc-4175
+                  title: RFC-4175
+                  properties:
+                    type:
+                      type: string
+                    video:
+                      $ref: '#/components/schemas/SenderStatistics/properties/sdi/properties/video'
+                - type: object
+                  description: Describes a aes-67
+                  title: AES-67
+                  properties:
+                    type:
+                      type: string
+                    packet_time:
+                      type: integer
+                    audio:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/SenderStatistics/properties/sdi/properties/audio/items'
+        ieee1588:
+          type: object
+          description: Describes a ieee-1588
+          title: IEEE-1588
+          properties:
+            type:
+              type: string
+            packet_time:
+              type: integer
+            sync_cnt:
+              type: integer
+            delay_req_cnt:
+              type: integer
+            pdelay_req_cnt:
+              type: integer
+            pdelay_resp_cnt:
+              type: integer
+            followup_cnt:
+              type: integer
+            delay_resp_cnt:
+              type: integer
+            pdelay_followup_cnt:
+              type: integer
+            announce_cnt:
+              type: integer
+            signaling_cnt:
+              type: integer
+            management_cnt:
+              type: integer
+        sdi:
+          type: object
+          description: Describes a sdi stats
+          title: SDI Stats
+          properties:
+            type:
+              type: string
+            format:
+              type: string
+            crc_edh_error:
+              type: boolean
+            crc_edh_error_cnt:
+              type: integer
+            trs_error:
+              type: boolean
+            trs_error_cnt:
+              type: integer
+            video:
+              type: object
+              description: Describes a video stats
+              title: Video Stats
+              properties:
+                field_rate:
+                  type: integer
+                width:
+                  type: integer
+                height:
+                  type: integer
+                scan:
+                  type: string
+                sampling:
+                  type: string
+                bit_depth:
+                  type: integer
+                encoding:
+                  type: string
+                frozen_frame:
+                  type: boolean
+                frozen_frame_cnt:
+                  type: integer
+            audio:
+              type: array
+              items:
+                type: object
+                description: Describes a audio stats
+                title: Audio Stats
+                properties:
+                  present:
+                    type: boolean
+                  silence:
+                    type: boolean
+                    nullable: true
+                  silence_cnt:
+                    type: integer
+                    nullable: true
+        ts:
+          type: object
+          description: Describes a ts stats
+          title: TS Stats
+          properties:
+            type:
+              type: string
+            packet_size:
+              type: integer
+            ts_packets_per_ip:
+              type: integer
+            ts_sync_loss:
+              type: boolean
+            sync_byte_error:
+              type: boolean
+            sync_byte_error_cnt:
+              type: integer
+            pat_error:
+              type: boolean
+            pat_error_cnt:
+              type: integer
+            pmt_error:
+              type: boolean
+            pmt_error_cnt:
+              type: integer
+            monitored_pids:
+              type: array
+              items:
+                type: object
+                properties:
+                  pid:
+                    type: integer
+                  cc_error:
+                    type: boolean
+                  cc_error_cnt:
+                    type: integer
+                  pid_loss:
+                    type: boolean
+                  pid_loss_cnt:
+                    type: integer
+            null_rate_error:
+              type: boolean
+            null_rate_error_cnt:
+              type: integer
+    SenderStatus:
+      type: object
+      description: Describes a status
+      title: Status
+      properties:
+        color:
+          type: string
+        message:
+          type: string
+    SenderPolicy:
+      type: object
+      description: Describes a policy
+      title: Policy
+      oneOf:
+        - type: object
+          description: Describes a ieee-1588 policy
+          title: IEEE-1588 Policy
+          properties:
+            type:
+              type: string
+            max_packet_rate:
+              type: integer
+        - type: object
+          description: Describes a sdi policy
+          title: SDI Policy
+          properties:
+            type:
+              type: string
+            max_bitrate:
+              type: integer
+            crc_edh_error:
+              $ref: '#/components/schemas/SenderPolicy/oneOf/3/properties/sn_error'
+            trs_error:
+              $ref: '#/components/schemas/SenderPolicy/oneOf/3/properties/sn_error'
+            video:
+              type: object
+              description: Describes a sdi video policy
+              title: SDI Video Policy
+              properties:
+                frozen_frame:
+                  $ref: '#/components/schemas/SenderPolicy/oneOf/3/properties/sn_error'
+            audio:
+              type: object
+              description: Describes a sdi audio policy
+              title: SDI Audio Policy
+              properties:
+                presence:
+                  $ref: '#/components/schemas/SenderPolicy/oneOf/3/properties/sn_error'
+                silence:
+                  $ref: '#/components/schemas/SenderPolicy/oneOf/3/properties/sn_error'
+        - type: object
+          description: Describes a ts policy
+          title: TS Policy
+          properties:
+            type:
+              type: string
+            ts_max_bitrate:
+              type: integer
+            ts_sync_error:
+              $ref: '#/components/schemas/SenderPolicy/oneOf/3/properties/sn_error'
+            ts_null_rate:
+              $ref: '#/components/schemas/SenderPolicy/oneOf/3/properties/sn_error'
+            ts_pat_error:
+              $ref: '#/components/schemas/SenderPolicy/oneOf/3/properties/sn_error'
+            ts_pmt_error:
+              $ref: '#/components/schemas/SenderPolicy/oneOf/3/properties/sn_error'
+            monitored_pids:
+              type: array
+              items:
+                type: object
+                properties:
+                  pid:
+                    type: integer
+                  pid_loss_interval:
+                    $ref: '#/components/schemas/SenderPolicy/oneOf/3/properties/sn_error'
+                  cc_error:
+                    $ref: '#/components/schemas/SenderPolicy/oneOf/3/properties/sn_error'
+        - type: object
+          description: Describes a rtp policy
+          title: RTP Policy
+          properties:
+            type:
+              type: string
+            ssrc:
+              type: integer
+            rtp_pdv_max:
+              type: integer
+            sn_error:
+              type: object
+              description: Describes a alarm spec
+              title: Alarm Spec
+              properties:
+                alarm:
+                  type: boolean
+                failover:
+                  type: boolean
+                alarm_max:
+                  type: integer
+                failover_max:
+                  type: integer
+            ts_error:
+              $ref: '#/components/schemas/SenderPolicy/oneOf/3/properties/sn_error'
+            fec_sn_error:
+              $ref: '#/components/schemas/SenderPolicy/oneOf/3/properties/sn_error'
+            fec_row_lock_error:
+              $ref: '#/components/schemas/SenderPolicy/oneOf/3/properties/sn_error'
+            fec_col_lock_error:
+              $ref: '#/components/schemas/SenderPolicy/oneOf/3/properties/sn_error'
+            fec_rows:
+              type: integer
+            fec_cols:
+              type: integer
+            payload:
+              oneOf:
+                - type: object
+                  description: Describes a smpte-2022-6 policy
+                  title: SMPTE-2022-6 Policy
+                  properties:
+                    type:
+                      type: string
+                    sdi:
+                      $ref: '#/components/schemas/SenderPolicy/oneOf/1'
+                - type: object
+                  description: Describes a smpte-2022-2 policy
+                  title: SMPTE-2022-2 Policy
+                  properties:
+                    type:
+                      type: string
+                    ts:
+                      $ref: '#/components/schemas/SenderPolicy/oneOf/2'
+                - type: object
+                  description: Describes a AES-67 policy
+                  title: AES-67 Policy
+                  properties:
+                    type:
+                      type: string
+                    max_bitrate:
+                      type: integer
+                    audio:
+                      $ref: '#/components/schemas/SenderPolicy/oneOf/1/properties/audio'
+                - type: object
+                  description: Describes a rfc-4175 policy
+                  title: RFC-4175 Policy
+                  properties:
+                    type:
+                      type: string
+                    max_bitrate:
+                      type: integer
+                    video:
+                      $ref: '#/components/schemas/SenderPolicy/oneOf/1/properties/video'
+    SenderInterface:
+      type: object
+      description: Describes an interface
+      title: Interface
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        ip:
+          type: object
+          properties:
+            local_address:
+              type: string
+            gw_address:
+              type: string
+            netmask:
+              type: string
+            igmp:
+              type: string
+        vlans:
+          type: array
+          items:
+            type: integer
+        src_ip:
+          type: string
+        dst_ip:
+          type: string
+        src_port:
+          type: integer
+        dst_port:
+          type: integer
+    Error:
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
